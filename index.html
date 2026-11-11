@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="ms" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzium Bahasa Kebangsaan - Tom & Jerry Edition</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Bangers & Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cartoon: ['Bangers', 'cursive'],
+                        fun: ['Fredoka', 'sans-serif'],
+                    },
+                    colors: {
+                        tjred: '#e63946',
+                        tjyellow: '#ffd166',
+                        tjblue: '#457b9d',
+                        tjdark: '#1d3557',
+                        tjcream: '#fdf0d5',
+                        tjgreen: '#2a9d8f'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f4f1de;
+            background-image: radial-gradient(#e07a5f 15%, transparent 16%), radial-gradient(#e07a5f 15%, transparent 16%);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            font-family: 'Fredoka', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .comic-border {
+            border: 4px solid #111;
+            box-shadow: 6px 6px 0px #111;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .comic-border:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px #111;
+        }
+
+        .comic-title {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            text-shadow: 3px 3px 0px #111, -2px -2px 0px #111, 2px -2px 0px #111, -2px 2px 0px #111;
+            line-height: 1.2;
+        }
+
+        /* LED Neon Border Animation */
+        @keyframes ledGlow {
+            0% { box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, inset 0 0 15px #ff0055; border-color: #ff0055; }
+            33% { box-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc, inset 0 0 15px #00ffcc; border-color: #00ffcc; }
+            66% { box-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00, inset 0 0 15px #ffcc00; border-color: #ffcc00; }
+            100% { box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055, inset 0 0 15px #ff0055; border-color: #ff0055; }
+        }
+        .led-gateway {
+            animation: ledGlow 3s infinite;
+        }
+
+        @keyframes runRight {
+            0% { transform: translateX(-150px); }
+            100% { transform: translateX(calc(100vw + 150px)); }
+        }
+
+        .running-jerry {
+            position: absolute;
+            animation: runRight 10s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes runTom {
+            0% { transform: translateX(-200px); }
+            100% { transform: translateX(calc(100vw + 200px)); }
+        }
+
+        .running-tom {
+            position: absolute;
+            animation: runTom 10s linear infinite;
+            animation-delay: 1.2s;
+            white-space: nowrap;
+        }
+
+        /* Flip card styling */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card-inner.flipped {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Slow Free Floating Pond Ducks Animation */
+        @keyframes floatDuck1 {
+            0% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(30px, -15px) rotate(6deg); }
+            66% { transform: translate(-15px, 20px) rotate(-5deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+        @keyframes floatDuck2 {
+            0% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(-25px, 15px) rotate(-6deg); }
+            66% { transform: translate(20px, -15px) rotate(5deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+        @keyframes floatDuck3 {
+            0% { transform: translate(0px, 0px) rotate(0deg); }
+            33% { transform: translate(20px, 25px) rotate(8deg); }
+            66% { transform: translate(-20px, -15px) rotate(-6deg); }
+            100% { transform: translate(0px, 0px) rotate(0deg); }
+        }
+
+        .duck-p1 { animation: floatDuck1 6s ease-in-out infinite; }
+        .duck-p2 { animation: floatDuck2 8s ease-in-out infinite; }
+        .duck-p3 { animation: floatDuck3 10s ease-in-out infinite; }
+
+        /* Moving GIF under quiz */
+        @keyframes floatUpDown {
+            0%, 100% { transform: translateY(0px) rotate(-3deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+        }
+        .floating-gif {
+            animation: floatUpDown 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="text-gray-900 pb-20">
+
+    <!-- AUDIO ELEMENTS -->
+    <audio id="bgmAudio" src="bgm.mp3" loop preload="auto"></audio>
+    <audio id="duckAudio" src="duck_sound.mp3" preload="auto"></audio>
+    <audio id="clickAudio" src="click_sound.mp3" preload="auto"></audio>
+
+    <!-- SOUND CONTROL TOGGLES (SEPARATED BGM & SFX AT TOP RIGHT) -->
+    <div class="fixed top-3 right-3 sm:top-4 sm:right-4 z-50 flex flex-col sm:flex-row gap-2 font-cartoon text-xs sm:text-sm">
+        <!-- BGM Button -->
+        <div class="bg-white px-3 py-1.5 rounded-full border-3 border-black shadow-lg flex items-center gap-2">
+            <span>🎵 Muzik (BGM):</span>
+            <button onclick="toggleBGM()" id="bgm-toggle-btn" class="bg-green-500 text-white px-2.5 py-0.5 rounded-full border-2 border-black font-bold">ON</button>
+        </div>
+        <!-- SFX Button -->
+        <div class="bg-white px-3 py-1.5 rounded-full border-3 border-black shadow-lg flex items-center gap-2">
+            <span>🔊 Kesan Bunyi:</span>
+            <button onclick="toggleSFX()" id="sfx-toggle-btn" class="bg-green-500 text-white px-2.5 py-0.5 rounded-full border-2 border-black font-bold">ON</button>
+        </div>
+    </div>
+
+    <!-- 1. FULLSCREEN INTRO / "GO IN BILIK" LED GATEWAY -->
+    <div id="intro-gateway" class="fixed inset-0 z-40 bg-tjdark flex flex-col items-center justify-center p-4 transition-all duration-700 overflow-y-auto">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#ffd166_2px,transparent_2px)] [background-size:24px_24px]"></div>
+        
+        <div class="max-w-xl w-full bg-tjcream border-4 sm:border-6 border-black rounded-3xl p-5 sm:p-8 text-center relative z-10 led-gateway my-auto transform hover:scale-[1.01] transition-transform">
+            <div class="mb-4">
+                <img src="tom_welcome.gif" alt="Tom Welcome" class="w-28 h-24 sm:w-36 sm:h-30 object-cover mx-auto border-4 border-black rounded-2xl bg-white shadow-md transform -rotate-3">
+            </div>
+            
+            <div class="mb-6">
+                <div class="inline-block bg-tjyellow px-4 py-1.5 sm:px-6 sm:py-2 rounded-full border-3 sm:border-4 border-black font-cartoon text-xl sm:text-2xl text-tjred shadow mb-3 transform rotate-2">
+                    ✨ Pintu Masuk Muzium Eksklusif ✨
+                </div>
+                <h1 class="text-2xl sm:text-5xl comic-title text-tjred mb-3">Muzium Bahasa Kebangsaan</h1>
+                <p class="text-xs sm:text-base font-semibold text-gray-700 leading-relaxed">
+                    Masuk ke dalam bilik pameran interaktif penuh ceria! Tekan butang di bawah untuk mula meneroka nota.
+                </p>
+            </div>
+
+            <!-- Interactive 3D Door Button -->
+            <button onclick="enterMuseum()" class="group relative inline-flex items-center gap-2 sm:gap-3 bg-tjyellow hover:bg-amber-300 text-black font-cartoon text-xl sm:text-3xl px-6 py-3 sm:px-8 sm:py-4 rounded-2xl border-4 border-black shadow-[4px_4px_0px_#111] sm:shadow-[6px_6px_0px_#111] hover:translate-y-[-4px] active:translate-y-[2px] transition-all">
+                <i class="fa-solid fa-door-open text-2xl sm:text-3xl group-hover:rotate-12 transition-transform text-tjred"></i>
+                Go In Bilik (Masuk Sekarang!)
+            </button>
+        </div>
+    </div>
+
+    <!-- RUNNING TOM & JERRY HEADER BAR -->
+    <div class="bg-black text-tjyellow py-2 overflow-hidden relative border-b-4 border-black h-14 sm:h-16 flex items-center">
+        <div class="running-jerry flex items-center gap-2 font-cartoon text-base sm:text-xl text-yellow-300">
+            <span>🧀</span> <span>Jerry: "Jom teroka nota bahasa kebangsaan!"</span>
+            <img src="jerry_run.gif" class="w-8 h-8 sm:w-10 sm:h-10 object-contain inline" alt="Jerry">
+        </div>
+        <div class="running-tom flex items-center gap-2 font-cartoon text-base sm:text-xl text-red-400">
+            <span>🐱</span> <span>Tom: "Aku kejar kau sambil belajar akta & peranan itik kolam!"</span>
+            <img src="tom_welcome.gif" class="w-8 h-8 sm:w-10 sm:h-10 object-contain inline" alt="Tom">
+        </div>
+    </div>
+
+    <!-- MAIN HEADER -->
+    <header class="bg-tjred text-white py-8 sm:py-10 px-4 border-b-6 border-black relative overflow-hidden text-center">
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="inline-block bg-tjyellow text-black font-cartoon px-3 py-1 text-base sm:text-xl rounded-full border-3 border-black mb-3 transform -rotate-2">
+                <i class="fa-solid fa-star text-amber-800"></i> Edisi Interaktif Penuh (Itik Saiz Besar & Mesra Telefon/Laptop) <i class="fa-solid fa-award text-blue-900"></i>
+            </div>
+            <h1 class="text-3xl sm:text-6xl md:text-7xl comic-title text-tjyellow uppercase mb-3">
+                Bahasa Kebangsaan Malaysia
+            </h1>
+            <p class="text-sm sm:text-xl font-semibold max-w-2xl mx-auto bg-black bg-opacity-25 p-3 rounded-xl border-2 border-dashed border-tjyellow leading-relaxed">
+                Nota lengkap perlembagaan, kolam itik gambar sendiri dengan sound effect, kad flip institusi, kotak cabaran & kuiz!
+            </p>
+        </div>
+    </header>
+
+    <!-- NAVIGATION TABS -->
+    <nav class="max-w-6xl mx-auto px-2 sm:px-4 mt-4 sm:mt-6 sticky top-2 sm:top-4 z-30">
+        <div class="bg-white/95 backdrop-blur p-1.5 sm:p-2 rounded-2xl border-3 sm:border-4 border-black shadow-[4px_4px_0px_#111] flex flex-wrap justify-center gap-1.5 sm:gap-2 font-cartoon text-sm sm:text-lg">
+            <button onclick="switchTab('perlembagaan')" id="btn-perlembagaan" class="tab-btn bg-tjyellow text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-amber-300">
+                <i class="fa-solid fa-scroll"></i> 1. Akta & Perlembagaan
+            </button>
+            <button onclick="switchTab('peranan')" id="btn-peranan" class="tab-btn bg-white text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-gray-100">
+                <i class="fa-solid fa-water"></i> 2. Tangkap Itik Kolam
+            </button>
+            <button onclick="switchTab('institusi')" id="btn-institusi" class="tab-btn bg-white text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-gray-100">
+                <i class="fa-solid fa-id-card"></i> 3. Kad Flip Institusi
+            </button>
+            <button onclick="switchTab('cabaran')" id="btn-cabaran" class="tab-btn bg-white text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-gray-100">
+                <i class="fa-solid fa-puzzle-piece"></i> 4. Kotak Cabaran
+            </button>
+            <button onclick="switchTab('glosari')" id="btn-glosari" class="tab-btn bg-white text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-gray-100">
+                <i class="fa-solid fa-book"></i> 5. Glosari
+            </button>
+            <button onclick="switchTab('kuiz')" id="btn-kuiz" class="tab-btn bg-tjred text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-red-600 animate-pulse">
+                <i class="fa-solid fa-gamepad"></i> 6. Kuiz Tom & Jerry
+            </button>
+        </div>
+    </nav>
+
+    <!-- CONTENT CONTAINER -->
+    <main class="max-w-6xl mx-auto px-3 sm:px-4 mt-6 sm:mt-8">
+
+        <!-- SECTION 1: PERLEMBAGAAN & AKTA -->
+        <div id="tab-perlembagaan" class="tab-content space-y-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-8 comic-border relative">
+                <div class="absolute -top-5 -right-2 sm:-top-6 sm:-right-4 bg-tjyellow text-black font-cartoon text-xl sm:text-2xl px-3 py-1 sm:px-4 sm:py-1 rounded-full border-3 border-black transform rotate-6 shadow z-10">
+                    📜 Bahagian Akta
+                </div>
+                <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
+                    <div class="w-full md:w-1/3">
+                        <img src="akata_banner.png" alt="Akta Banner" class="w-full h-40 sm:h-48 object-cover rounded-2xl border-3 border-black bg-tjcream shadow">
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h2 class="text-2xl sm:text-4xl comic-title text-tjred mb-3">
+                            <i class="fa-solid fa-landmark text-amber-500"></i> Kedudukan Bahasa Kebangsaan & Akta Dalam Perlembagaan
+                        </h2>
+                        <p class="text-sm sm:text-base text-gray-700 font-medium leading-relaxed">Jom semak akta-akta penting yang mengukuhkan kedudukan Bahasa Melayu di Malaysia bersama Tom dan Jerry!</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                    <div class="bg-tjcream p-4 sm:p-5 rounded-2xl border-3 border-black flex flex-col justify-between">
+                        <ul class="space-y-3 sm:space-y-4 font-medium text-sm sm:text-base leading-relaxed">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-tjred text-white w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-cartoon text-lg border-2 border-black">1</span>
+                                <span><strong>Bahasa Melayu</strong> ialah bahasa kebangsaan dan bahasa rasmi negara kita.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-tjred text-white w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-cartoon text-lg border-2 border-black">2</span>
+                                <span>Kedudukan bahasa Melayu sebagai bahasa rasmi termaktub dalam <strong>Akta Bahasa Kebangsaan 1963/67</strong>.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-tjcream p-4 sm:p-5 rounded-2xl border-3 border-black flex flex-col justify-between">
+                        <ul class="space-y-3 sm:space-y-4 font-medium text-sm sm:text-base leading-relaxed">
+                            <li class="flex items-start gap-3">
+                                <span class="bg-tjred text-white w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-cartoon text-lg border-2 border-black">3</span>
+                                <span>Kepentingan bahasa Melayu sebagai bahasa ilmu diwartakan dalam <strong>Akta Pelajaran 1961</strong> dan <strong>Akta Pendidikan 1996</strong>.</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="bg-tjred text-white w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-cartoon text-lg border-2 border-black">4</span>
+                                <span>Pada masa yang sama, masyarakat pelbagai kaum di Malaysia boleh menggunakan bahasa lain seperti <strong>bahasa Mandarin, bahasa Tamil dan bahasa Inggeris</strong> dalam komunikasi harian mereka.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: PERANAN ("Tangkap Itik dalam Kolam") -->
+        <div id="tab-peranan" class="tab-content hidden space-y-6">
+            <div class="bg-sky-100 rounded-3xl p-5 sm:p-8 comic-border relative pt-8 sm:pt-10">
+                <!-- RED TITLE BADGE -->
+                <div class="absolute -top-4 left-4 sm:-top-5 sm:left-6 bg-tjred text-white font-cartoon text-lg sm:text-2xl px-4 py-1.5 rounded-2xl border-3 border-black transform -rotate-2 shadow-lg z-20">
+                    🦆 Permainan Kolam Itik
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-2xl sm:text-4xl comic-title text-tjblue mb-2 flex items-center gap-3">
+                            <i class="fa-solid fa-water text-cyan-600"></i> Tangkap Itik dalam Kolam (8 Peranan Bahasa)
+                        </h2>
+                        <p class="text-xs sm:text-base text-gray-700 font-medium">Tekan itik saiz besar anda yang berenang bebas untuk mendengar bunyi itik dan mengetahui peranan bahasa!</p>
+                    </div>
+                    <div class="mt-3 md:mt-0 bg-white px-4 py-2 rounded-2xl border-3 border-black shadow font-cartoon text-lg sm:text-xl text-tjred shrink-0">
+                        Itik Ditangkap: <span id="duck-count">0</span> / 8 🦆
+                    </div>
+                </div>
+
+                <!-- Pond Area with 8 Large Floating Ducks -->
+                <div class="bg-sky-200 border-4 border-black rounded-3xl p-4 sm:p-8 min-h-[480px] sm:min-h-[520px] relative flex flex-wrap items-center justify-around gap-6 sm:gap-10 shadow-inner overflow-hidden">
+                    <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#0284c7_2px,transparent_2px)] [background-size:24px_24px]"></div>
+                    
+                    <!-- Duck 1 -->
+                    <div onclick="catchDuck(0, 'Lambang Jati Diri', 'Bahasa kebangsaan berperanan sebagai lambang negara Malaysia di persada dunia dan perakuan jati diri rakyat Malaysia.')" 
+                         class="duck-item duck-p1 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-tjred bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 1</span>
+                    </div>
+
+                    <!-- Duck 2 -->
+                    <div onclick="catchDuck(1, 'Asas Pembinaan Negara', 'Masyarakat berbilang kaum memerlukan satu bahasa yang difahami oleh semua kaum sebagai panduan.')" 
+                         class="duck-item duck-p2 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-tjblue bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 2</span>
+                    </div>
+
+                    <!-- Duck 3 -->
+                    <div onclick="catchDuck(2, 'Bahasa Persuratan', 'Bahasa kebangsaan digunakan dalam karya persuratan. Contohnya, pantun, syair dan novel.')" 
+                         class="duck-item duck-p3 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-emerald-600 bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 3</span>
+                    </div>
+
+                    <!-- Duck 4 -->
+                    <div onclick="catchDuck(3, 'Bahasa Perhubungan', 'Bahasa kebangsaan merupakan bahasa komunikasi antara masyarakat berbilang kaum di negara kita dan peringkat serantau.')" 
+                         class="duck-item duck-p1 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-purple-600 bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 4</span>
+                    </div>
+
+                    <!-- Duck 5 -->
+                    <div onclick="catchDuck(4, 'Bahasa Undang-undang', 'Bahasa kebangsaan digunakan dalam urusan rasmi di mahkamah.')" 
+                         class="duck-item duck-p2 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-red-600 bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 5</span>
+                    </div>
+
+                    <!-- Duck 6 -->
+                    <div onclick="catchDuck(5, 'Bahasa Ekonomi', 'Bahasa kebangsaan digunakan dalam kegiatan ekonomi di negara kita.')" 
+                         class="duck-item duck-p3 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-amber-600 bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 6</span>
+                    </div>
+
+                    <!-- Duck 7 -->
+                    <div onclick="catchDuck(6, 'Bahasa Pentadbiran', 'Bahasa kebangsaan digunakan dalam urusan rasmi seperti mesyuarat, kursus, taklimat, bengkel dan surat-menyurat.')" 
+                         class="duck-item duck-p1 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-blue-500 bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 7</span>
+                    </div>
+
+                    <!-- Duck 8 -->
+                    <div onclick="catchDuck(7, 'Bahasa Pendidikan', 'Bahasa kebangsaan merupakan bahasa pengantar dan penyampaian maklumat dalam sistem pendidikan negara kita.')" 
+                         class="duck-item duck-p2 cursor-pointer text-center transition-transform hover:scale-110 active:scale-95 select-none my-2">
+                        <img src="itik.png" class="w-28 h-28 sm:w-36 sm:h-36 object-contain mx-auto drop-shadow-lg" alt="Itik">
+                        <span class="font-cartoon text-base sm:text-lg text-emerald-500 bg-white/90 px-3 py-1 rounded-full border-2 border-black shadow-sm">Itik 8</span>
+                    </div>
+                </div>
+
+                <!-- Pop-up Modal for Caught Duck Role -->
+                <div id="duck-modal" class="mt-6 bg-white p-5 sm:p-6 rounded-2xl border-4 border-black shadow-[6px_6px_0px_#111] hidden text-center z-20 relative">
+                    <div class="text-3xl sm:text-4xl mb-2">🎯 <span id="modal-duck-title" class="comic-title text-tjred text-2xl sm:text-3xl"></span></div>
+                    <p id="modal-duck-desc" class="text-sm sm:text-lg font-semibold text-gray-800 mb-4 leading-relaxed"></p>
+                    <button onclick="closeDuckModal()" class="bg-tjyellow hover:bg-amber-300 text-black font-cartoon text-lg sm:text-xl px-6 py-2 rounded-xl border-3 border-black shadow">
+                        Teruskan Tangkap Itik Lain! 🦆
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3: INSTITUSI (Flip Cards) -->
+        <div id="tab-institusi" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-3xl p-5 sm:p-8 comic-border relative">
+                <div class="absolute -top-5 -right-2 sm:-top-6 sm:-right-4 bg-emerald-500 text-white font-cartoon text-xl sm:text-2xl px-3 py-1 sm:px-4 sm:py-1 rounded-full border-3 border-black transform rotate-3 shadow z-10">
+                    🃏 Kad Flip Institusi
+                </div>
+                <h2 class="text-2xl sm:text-4xl comic-title text-emerald-600 mb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-university"></i> Institusi & Usaha Mempertahankan Bahasa Kebangsaan
+                </h2>
+                <p class="text-xs sm:text-base text-gray-700 font-medium mb-6">Tekan mana-mana kad di bawah untuk melihat maklumat terbalik (Flip Card)!</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Card 1: DBP -->
+                    <div class="h-80 perspective-1000 cursor-pointer" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full text-center shadow-[6px_6px_0px_#111] rounded-2xl border-4 border-black">
+                            <div class="flip-card-front absolute inset-0 bg-tjcream p-5 rounded-xl flex flex-col items-center justify-between">
+                                <img src="dbp.png" class="w-24 h-20 object-contain border-2 border-black rounded-lg bg-white p-1" alt="DBP Logo">
+                                <div>
+                                    <h3 class="font-cartoon text-2xl text-tjred mb-1 leading-tight">Dewan Bahasa & Pustaka (DBP)</h3>
+                                    <p class="text-xs font-semibold text-gray-700">Ditubuhkan 1956</p>
+                                </div>
+                                <span class="text-xs bg-tjyellow px-3 py-1 rounded-full border-2 border-black font-bold">Tekan untuk Flip 🔄</span>
+                            </div>
+                            <div class="flip-card-back absolute inset-0 bg-white p-5 rounded-xl flex flex-col justify-center text-left">
+                                <h3 class="font-cartoon text-xl text-tjred mb-2 border-b-2 border-tjred pb-1">Fungsi Utama DBP:</h3>
+                                <ul class="text-xs space-y-1.5 list-disc list-inside font-medium text-gray-800 leading-normal">
+                                    <li>Membina & memperkaya bahasa kebangsaan.</li>
+                                    <li>Menerbitkan pelbagai bahan bacaan.</li>
+                                    <li>Membakukan ejaan, sebutan & istilah.</li>
+                                    <li>Menggalakkan penggunaan yang betul.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Sistem Pendidikan -->
+                    <div class="h-80 perspective-1000 cursor-pointer" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full text-center shadow-[6px_6px_0px_#111] rounded-2xl border-4 border-black">
+                            <div class="flip-card-front absolute inset-0 bg-blue-50 p-5 rounded-xl flex flex-col items-center justify-between">
+                                <img src="akata_banner.png" class="w-24 h-20 object-cover border-2 border-black rounded-lg bg-white" alt="Pendidikan">
+                                <div>
+                                    <h3 class="font-cartoon text-2xl text-tjblue mb-1 leading-tight">Sistem Pendidikan</h3>
+                                    <p class="text-xs font-semibold text-gray-700">Penyata Razak & Rahman Talib</p>
+                                </div>
+                                <span class="text-xs bg-tjyellow px-3 py-1 rounded-full border-2 border-black font-bold">Tekan untuk Flip 🔄</span>
+                            </div>
+                            <div class="flip-card-back absolute inset-0 bg-white p-5 rounded-xl flex flex-col justify-center text-left">
+                                <h3 class="font-cartoon text-xl text-tjblue mb-2 border-b-2 border-tjblue pb-1">Garis Masa Pendidikan:</h3>
+                                <ul class="text-xs space-y-2 list-disc list-inside font-medium text-gray-800 leading-normal">
+                                    <li><strong>Penyata Razak (1956):</strong> Bahasa kebangsaan sebagai pengantar sekolah kebangsaan.</li>
+                                    <li><strong>Penyata Rahman Talib (1960):</strong> Pengantar sekolah & universiti.</li>
+                                    <li><strong>Akta Bahasa Kebangsaan 1963/67</strong> diwujudkan.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: UKM -->
+                    <div class="h-80 perspective-1000 cursor-pointer" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full text-center shadow-[6px_6px_0px_#111] rounded-2xl border-4 border-black">
+                            <div class="flip-card-front absolute inset-0 bg-amber-50 p-5 rounded-xl flex flex-col items-center justify-between">
+                                <img src="ukm_logo.png" class="w-24 h-20 object-contain border-2 border-black rounded-lg bg-white p-1" alt="UKM Logo">
+                                <div>
+                                    <h3 class="font-cartoon text-2xl text-amber-700 mb-1 leading-tight">Universiti Kebangsaan Malaysia</h3>
+                                    <p class="text-xs font-semibold text-gray-700">Ditubuhkan 1970</p>
+                                </div>
+                                <span class="text-xs bg-tjyellow px-3 py-1 rounded-full border-2 border-black font-bold">Tekan untuk Flip 🔄</span>
+                            </div>
+                            <div class="flip-card-back absolute inset-0 bg-white p-5 rounded-xl flex flex-col justify-center text-left">
+                                <h3 class="font-cartoon text-xl text-amber-700 mb-2 border-b-2 border-amber-700 pb-1">Peranan UKM:</h3>
+                                <p class="text-xs font-medium text-gray-800 leading-relaxed">Ditubuhkan pada tahun <strong>1970</strong> khusus bagi memartabatkan bahasa kebangsaan sebagai bahasa ilmu di peringkat tinggi.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Bulan Bahasa -->
+                    <div class="h-80 perspective-1000 cursor-pointer" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full text-center shadow-[6px_6px_0px_#111] rounded-2xl border-4 border-black">
+                            <div class="flip-card-front absolute inset-0 bg-pink-50 p-5 rounded-xl flex flex-col items-center justify-between">
+                                <div class="text-5xl my-auto">📅</div>
+                                <div>
+                                    <h3 class="font-cartoon text-2xl text-pink-600 mb-1 leading-tight">Bulan Bahasa Kebangsaan</h3>
+                                    <p class="text-xs font-semibold text-gray-700">Setiap Bulan Oktober</p>
+                                </div>
+                                <span class="text-xs bg-tjyellow px-3 py-1 rounded-full border-2 border-black font-bold">Tekan untuk Flip 🔄</span>
+                            </div>
+                            <div class="flip-card-back absolute inset-0 bg-white p-5 rounded-xl flex flex-col justify-center text-left">
+                                <h3 class="font-cartoon text-xl text-pink-600 mb-2 border-b-2 border-pink-600 pb-1">Matlamat Sambutan:</h3>
+                                <p class="text-xs font-medium text-gray-800 leading-relaxed">Disambut pada setiap <strong>bulan Oktober</strong> untuk menggalakkan penggunaan bahasa kebangsaan dalam kalangan masyarakat.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Dekad Bahasa -->
+                    <div class="h-80 perspective-1000 cursor-pointer" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full text-center shadow-[6px_6px_0px_#111] rounded-2xl border-4 border-black">
+                            <div class="flip-card-front absolute inset-0 bg-purple-50 p-5 rounded-xl flex flex-col items-center justify-between">
+                                <div class="text-5xl my-auto">🚩</div>
+                                <div>
+                                    <h3 class="font-cartoon text-2xl text-purple-700 mb-1 leading-tight">Dekad Bahasa Kebangsaan</h3>
+                                    <p class="text-xs font-semibold text-gray-700">Memperkasa Bahasa Melayu</p>
+                                </div>
+                                <span class="text-xs bg-tjyellow px-3 py-1 rounded-full border-2 border-black font-bold">Tekan untuk Flip 🔄</span>
+                            </div>
+                            <div class="flip-card-back absolute inset-0 bg-white p-5 rounded-xl flex flex-col justify-center text-left">
+                                <h3 class="font-cartoon text-xl text-purple-700 mb-2 border-b-2 border-purple-700 pb-1">Fokus Dekad:</h3>
+                                <p class="text-xs font-medium text-gray-800 leading-relaxed">Memperkasakan peranan bahasa Melayu sebagai bahasa kebangsaan dan rasmi dalam pelbagai bidang strategik.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 6: MBMMBI -->
+                    <div class="h-80 perspective-1000 cursor-pointer" onclick="this.querySelector('.flip-card-inner').classList.toggle('flipped')">
+                        <div class="flip-card-inner relative w-full h-full text-center shadow-[6px_6px_0px_#111] rounded-2xl border-4 border-black">
+                            <div class="flip-card-front absolute inset-0 bg-emerald-50 p-5 rounded-xl flex flex-col items-center justify-between">
+                                <div class="text-5xl my-auto">🏆</div>
+                                <div>
+                                    <h3 class="font-cartoon text-2xl text-emerald-700 mb-1 leading-tight">Dasar MBMMBI</h3>
+                                    <p class="text-xs font-semibold text-gray-700">Diperkenalkan 2012</p>
+                                </div>
+                                <span class="text-xs bg-tjyellow px-3 py-1 rounded-full border-2 border-black font-bold">Tekan untuk Flip 🔄</span>
+                            </div>
+                            <div class="flip-card-back absolute inset-0 bg-white p-5 rounded-xl flex flex-col justify-center text-left">
+                                <h3 class="font-cartoon text-xl text-emerald-700 mb-2 border-b-2 border-emerald-700 pb-1">Definisi MBMMBI:</h3>
+                                <p class="text-xs font-medium text-gray-800 leading-relaxed">Dasar Memartabatkan Bahasa Malaysia, Memperkukuh Bahasa Inggeris yang mula diperkenalkan pada tahun 2012.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 4: KOTAK CABARAN -->
+        <div id="tab-cabaran" class="tab-content hidden space-y-6">
+            <div class="bg-purple-100 rounded-3xl p-5 sm:p-8 comic-border relative">
+                <div class="absolute -top-5 -left-2 sm:-top-6 sm:-left-4 bg-purple-600 text-white font-cartoon text-xl sm:text-2xl px-3 py-1 sm:px-4 sm:py-1 rounded-full border-3 border-black transform -rotate-3 shadow z-10">
+                    ⚠️ Kotak Cabaran Aktif
+                </div>
+                <h2 class="text-2xl sm:text-4xl comic-title text-purple-800 mb-3 flex items-center gap-3">
+                    <i class="fa-solid fa-puzzle-piece text-purple-700"></i> Kotak Cabaran Penggunaan Bahasa Melayu
+                </h2>
+                <p class="text-xs sm:text-base text-gray-700 font-medium mb-6">Klik pada mana-mana kad cabaran di bawah untuk memaparkan popup interaktif!</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    
+                    <div onclick="openChallengeModal('Komunikasi Harian', 'Bahasa Melayu sering kali digunakan bersama-sama dengan bahasa lain dalam komunikasi harian.', 'Tips Tom & Jerry: Sentiasa utamakan Bahasa Melayu yang betul semasa bersembang!')" 
+                         class="bg-white p-5 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] cursor-pointer hover:bg-purple-50 transition-transform hover:scale-105 flex flex-col justify-between">
+                        <div>
+                            <div class="text-purple-600 font-cartoon text-lg sm:text-xl mb-2 flex items-center gap-2 leading-snug"><i class="fa-solid fa-comments"></i> 1. Komunikasi Harian</div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">Bahasa Melayu sering kali digunakan bersama-sama dengan bahasa lain dalam komunikasi harian.</p>
+                        </div>
+                        <div class="mt-4 text-xs bg-purple-600 text-white font-bold px-3 py-1.5 rounded-xl border border-black inline-block shadow w-max">Buka Info Detail 🔍</div>
+                    </div>
+
+                    <div onclick="openChallengeModal('Sikap Penutur', 'Sikap penutur yang malu atau tiada kesungguhan lebih menyukarkan usaha untuk memartabatkan bahasa kebangsaan.', 'Tips Tom & Jerry: Jangan pernah malu! Yakinlah dengan keupayaan bahasa kebangsaan.')" 
+                         class="bg-white p-5 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] cursor-pointer hover:bg-purple-50 transition-transform hover:scale-105 flex flex-col justify-between">
+                        <div>
+                            <div class="text-purple-600 font-cartoon text-lg sm:text-xl mb-2 flex items-center gap-2 leading-snug"><i class="fa-solid fa-user-slash"></i> 2. Sikap Penutur</div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">Sikap penutur yang malu atau tiada kesungguhan lebih menyukarkan usaha memartabatkan bahasa.</p>
+                        </div>
+                        <div class="mt-4 text-xs bg-purple-600 text-white font-bold px-3 py-1.5 rounded-xl border border-black inline-block shadow w-max">Buka Info Detail 🔍</div>
+                    </div>
+
+                    <div onclick="openChallengeModal('Bidang Teknologi Maklumat', 'Teknologi maklumat pada masa ini amat penting. Kebanyakan alat dan aplikasi menggunakan bahasa Inggeris.', 'Tips Tom & Jerry: Bina kandungan kreatif dalam Bahasa Melayu di internet!')" 
+                         class="bg-white p-5 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] cursor-pointer hover:bg-purple-50 transition-transform hover:scale-105 flex flex-col justify-between">
+                        <div>
+                            <div class="text-purple-600 font-cartoon text-lg sm:text-xl mb-2 flex items-center gap-2 leading-snug"><i class="fa-solid fa-laptop-code"></i> 3. Teknologi Maklumat</div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">Kebanyakan alat dan aplikasi teknologi maklumat menggunakan bahasa Inggeris.</p>
+                        </div>
+                        <div class="mt-4 text-xs bg-purple-600 text-white font-bold px-3 py-1.5 rounded-xl border border-black inline-block shadow w-max">Buka Info Detail 🔍</div>
+                    </div>
+
+                    <div onclick="openChallengeModal('Latar Belakang Keluarga', 'Ibu bapa atau keluarga perlu memberikan semangat dan tunjuk ajar kepada anak-anak.', 'Tips Tom & Jerry: Mulakan dari rumah! Ajak ahli keluarga bertutur bahasa Melayu baku.')" 
+                         class="bg-white p-5 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] cursor-pointer hover:bg-purple-50 transition-transform hover:scale-105 flex flex-col justify-between">
+                        <div>
+                            <div class="text-purple-600 font-cartoon text-lg sm:text-xl mb-2 flex items-center gap-2 leading-snug"><i class="fa-solid fa-house-chimney"></i> 4. Latar Belakang Keluarga</div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">Ibu bapa atau keluarga perlu memberikan semangat dan tunjuk ajar penggunaan bahasa betul.</p>
+                        </div>
+                        <div class="mt-4 text-xs bg-purple-600 text-white font-bold px-3 py-1.5 rounded-xl border border-black inline-block shadow w-max">Buka Info Detail 🔍</div>
+                    </div>
+
+                    <div onclick="openChallengeModal('Bidang Pendidikan', 'Cabaran dalam kalangan murid wujud kerana cenderung menggunakan bahasa ibunda atau dialek semasa pembelajaran.', 'Tips Tom & Jerry: Guru dan rakan membimbing penggunaan bahasa Melayu standard.')" 
+                         class="bg-white p-5 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] cursor-pointer hover:bg-purple-50 transition-transform hover:scale-105 flex flex-col justify-between">
+                        <div>
+                            <div class="text-purple-600 font-cartoon text-lg sm:text-xl mb-2 flex items-center gap-2 leading-snug"><i class="fa-solid fa-book-atlas"></i> 5. Bidang Pendidikan</div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">Murid cenderung menggunakan bahasa ibunda atau dialek semasa proses pembelajaran.</p>
+                        </div>
+                        <div class="mt-4 text-xs bg-purple-600 text-white font-bold px-3 py-1.5 rounded-xl border border-black inline-block shadow w-max">Buka Info Detail 🔍</div>
+                    </div>
+
+                    <div onclick="openChallengeModal('Penggunaan Bahasa Rojak', 'Penggunaan dalam sesuatu majlis atau media sosial banyak mencampuradukkan bahasa dan sebutan.', 'Tips Tom & Jerry: Elakkan bahasa rojak di media sosial. Hargai tatabahasa!')" 
+                         class="bg-white p-5 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] cursor-pointer hover:bg-purple-50 transition-transform hover:scale-105 flex flex-col justify-between">
+                        <div>
+                            <div class="text-purple-600 font-cartoon text-lg sm:text-xl mb-2 flex items-center gap-2 leading-snug"><i class="fa-solid fa-shuffle"></i> 6. Bahasa Rojak</div>
+                            <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">Banyak mencampuradukkan bahasa, kosa kata dan sebutan disalahgunakan masyarakat.</p>
+                        </div>
+                        <div class="mt-4 text-xs bg-purple-600 text-white font-bold px-3 py-1.5 rounded-xl border border-black inline-block shadow w-max">Buka Info Detail 🔍</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: GLOSARI -->
+        <div id="tab-glosari" class="tab-content hidden space-y-6">
+            <div class="bg-pink-100 rounded-3xl p-5 sm:p-8 comic-border relative">
+                <div class="absolute -top-5 -right-2 sm:-top-6 sm:-right-4 bg-pink-500 text-white font-cartoon text-xl sm:text-2xl px-3 py-1 sm:px-4 sm:py-1 rounded-full border-3 border-black transform rotate-6 shadow z-10">
+                    📖 Glosari
+                </div>
+                <h2 class="text-2xl sm:text-4xl comic-title text-pink-700 mb-6 flex items-center gap-3">
+                    <i class="fa-solid fa-book-open-reader"></i> Glosari Kata Penting
+                </h2>
+
+                <div class="bg-white p-5 sm:p-6 rounded-2xl border-3 border-black shadow-[4px_4px_0px_#111] max-w-xl">
+                    <h3 class="font-cartoon text-xl sm:text-2xl text-tjred mb-2">Bahasa Rojak</h3>
+                    <p class="text-sm sm:text-base text-gray-800 leading-relaxed">Bahasa yang bercampur aduk kata-kata yang digunakan oleh penuturnya dalam komunikasi harian atau media sosial.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 6: KUIZ TOM & JERRY -->
+        <div id="tab-kuiz" class="tab-content hidden space-y-6">
+            <div class="bg-tjyellow bg-opacity-70 rounded-3xl p-5 sm:p-8 comic-border relative">
+                <div class="absolute -top-5 -right-2 sm:-top-6 sm:-right-4 bg-tjred text-white font-cartoon text-xl sm:text-2xl px-3 py-1 sm:px-4 sm:py-1 rounded-full border-3 border-black transform rotate-3 shadow z-10">
+                    🎮 Kuiz Tom & Jerry
+                </div>
+                <h2 class="text-2xl sm:text-4xl comic-title text-tjred mb-2 flex items-center gap-3">
+                    <i class="fa-solid fa-circle-question"></i> Kuiz Minda Bahasa Kebangsaan
+                </h2>
+                <p class="text-xs sm:text-sm font-semibold text-gray-800 mb-4">Jawab soalan di bawah dengan betul untuk bantu Jerry kumpul keju emas!</p>
+
+                <!-- MOVING TOM & JERRY GIFS -->
+                <div class="flex justify-center items-center gap-3 sm:gap-4 my-4 flex-wrap">
+                    <img src="jerry_run.gif" class="w-12 h-12 sm:w-16 sm:h-16 object-contain floating-gif bg-white p-1 rounded-xl border-2 border-black" alt="Jerry">
+                    <div class="font-cartoon text-base sm:text-lg text-tjred bg-white px-3 py-1 rounded-full border-2 border-black shadow">"Kejar markah penuh!"</div>
+                    <img src="quiz_tom.png" class="w-12 h-12 sm:w-16 sm:h-16 object-contain floating-gif bg-white p-1 rounded-xl border-2 border-black" alt="Tom" style="animation-delay: 1s;">
+                </div>
+
+                <!-- Quiz Box -->
+                <div id="quiz-box" class="bg-white p-4 sm:p-6 rounded-2xl border-3 sm:border-4 border-black shadow-[6px_6px_0px_#111]">
+                    <div class="flex justify-between items-center mb-4 border-b-2 border-gray-200 pb-2">
+                        <span id="question-number" class="font-cartoon text-lg sm:text-xl text-tjblue">Soalan 1 / 5</span>
+                        <span id="score-tracker" class="font-cartoon text-lg sm:text-xl text-emerald-600">Skor: 0</span>
+                    </div>
+
+                    <h3 id="question-text" class="text-base sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 leading-relaxed"></h3>
+
+                    <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"></div>
+
+                    <div id="quiz-feedback" class="mt-4 hidden p-3 rounded-xl font-bold text-center text-sm sm:text-base leading-relaxed"></div>
+
+                    <div class="mt-6 text-right">
+                        <button id="next-btn" onclick="nextQuestion()" class="hidden bg-tjred hover:bg-red-600 text-white font-cartoon text-lg sm:text-xl px-5 py-2 rounded-xl border-3 border-black shadow">
+                            Soalan Seterusnya ➡️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quiz Results -->
+                <div id="quiz-result-box" class="hidden bg-white p-6 sm:p-8 rounded-2xl border-4 border-black shadow-[6px_6px_0px_#111] text-center">
+                    <div class="text-5xl sm:text-6xl mb-3">🏆</div>
+                    <h3 class="text-2xl sm:text-3xl comic-title text-tjred mb-2">Tahniah! Kuiz Selesai!</h3>
+                    <p id="final-score-text" class="text-lg sm:text-xl font-bold mb-6 leading-relaxed"></p>
+                    <button onclick="restartQuiz()" class="bg-tjyellow hover:bg-amber-300 text-black font-cartoon text-lg sm:text-xl px-6 py-2.5 rounded-xl border-3 border-black shadow">
+                        Main Semula 🔄
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- UNIVERSAL POPUP MODAL -->
+    <div id="universal-modal" class="fixed inset-0 z-50 bg-black/60 hidden flex items-center justify-center p-4">
+        <div class="bg-tjcream p-5 sm:p-8 rounded-3xl border-4 border-black text-center max-w-lg shadow-[8px_8px_0px_#111] relative my-auto w-full">
+            <div class="text-3xl sm:text-4xl mb-2">💡 <span id="modal-title" class="comic-title text-tjred text-xl sm:text-3xl"></span></div>
+            <p id="modal-desc" class="text-sm sm:text-base font-semibold text-gray-800 mb-4 text-left bg-white p-3 sm:p-4 rounded-2xl border-2 border-black leading-relaxed"></p>
+            <p id="modal-tips" class="text-xs sm:text-sm font-bold text-purple-900 mb-6 bg-purple-100 p-3 rounded-xl border-2 border-dashed border-purple-500 text-left leading-relaxed"></p>
+            <button onclick="closeUniversalModal()" class="bg-tjyellow hover:bg-amber-300 text-black font-cartoon text-lg sm:text-xl px-6 py-2 rounded-xl border-3 border-black shadow">
+                Faham! Tutup 🚪
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="max-w-6xl mx-auto px-4 mt-12 sm:mt-16 text-center">
+        <div class="bg-tjyellow border-4 border-black p-5 sm:p-6 rounded-3xl shadow-[6px_6px_0px_#111]">
+            <h3 class="text-xl sm:text-2xl font-cartoon text-tjred mb-1">Hebat Macam Tom & Jerry! 🐱🐭</h3>
+            <p class="font-medium text-xs sm:text-sm text-gray-800">Teruskan memartabatkan Bahasa Kebangsaan kita di persada dunia!</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        let bgmEnabled = true;
+        let sfxEnabled = true;
+
+        function toggleBGM() {
+            bgmEnabled = !bgmEnabled;
+            const btn = document.getElementById('bgm-toggle-btn');
+            const bgm = document.getElementById('bgmAudio');
+
+            if (bgmEnabled) {
+                btn.innerText = "ON";
+                btn.className = "bg-green-500 text-white px-2.5 py-0.5 rounded-full border-2 border-black font-bold";
+                if (bgm) bgm.play().catch(e => console.log(e));
+            } else {
+                btn.innerText = "OFF";
+                btn.className = "bg-gray-400 text-white px-2.5 py-0.5 rounded-full border-2 border-black font-bold";
+                if (bgm) bgm.pause();
+            }
+        }
+
+        function toggleSFX() {
+            sfxEnabled = !sfxEnabled;
+            const btn = document.getElementById('sfx-toggle-btn');
+
+            if (sfxEnabled) {
+                btn.innerText = "ON";
+                btn.className = "bg-green-500 text-white px-2.5 py-0.5 rounded-full border-2 border-black font-bold";
+            } else {
+                btn.innerText = "OFF";
+                btn.className = "bg-gray-400 text-white px-2.5 py-0.5 rounded-full border-2 border-black font-bold";
+            }
+        }
+
+        function playClickSound() {
+            if (!sfxEnabled) return;
+            const clickAudio = document.getElementById('clickAudio');
+            if (clickAudio) {
+                clickAudio.currentTime = 0;
+                clickAudio.play().catch(e => console.log("Audio play blocked", e));
+            }
+        }
+
+        function playDuckSound() {
+            if (!sfxEnabled) return;
+            const duckAudio = document.getElementById('duckAudio');
+            if (duckAudio) {
+                duckAudio.currentTime = 0;
+                duckAudio.play().catch(e => console.log("Audio play blocked", e));
+            }
+        }
+
+        // Click sound listener for interactive buttons/cards
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('button') || e.target.closest('.cursor-pointer')) {
+                playClickSound();
+            }
+        });
+
+        function enterMuseum() {
+            playClickSound();
+            const gateway = document.getElementById('intro-gateway');
+            gateway.style.opacity = '0';
+            
+            // Play Background Music when user enters if BGM is enabled
+            if (bgmEnabled) {
+                const bgm = document.getElementById('bgmAudio');
+                if (bgm) bgm.play().catch(e => console.log("BGM autoplay prevented", e));
+            }
+
+            setTimeout(() => {
+                gateway.style.display = 'none';
+            }, 700);
+        }
+
+        function switchTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.add('hidden'));
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.className = "tab-btn bg-white text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-gray-100";
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (tabId === 'kuiz') {
+                activeBtn.className = "tab-btn bg-tjred text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-red-600 animate-pulse";
+            } else {
+                activeBtn.className = "tab-btn bg-tjyellow text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 border-black transition-all shadow hover:bg-amber-300";
+            }
+            
+            window.scrollTo({ top: 250, behavior: 'smooth' });
+        }
+
+        let caughtDucks = 0;
+        const caughtDuckIndices = new Set();
+
+        function catchDuck(index, title, description) {
+            playDuckSound(); 
+            if (!caughtDuckIndices.has(index)) {
+                caughtDuckIndices.add(index);
+                caughtDucks++;
+                document.getElementById('duck-count').innerText = caughtDucks;
+                
+                const duckItems = document.querySelectorAll('.duck-item');
+                duckItems[index].style.opacity = '0.3';
+                duckItems[index].style.transform = 'scale(0.7)';
+            }
+
+            const modal = document.getElementById('duck-modal');
+            modal.classList.remove('hidden');
+            document.getElementById('modal-duck-title').innerText = title;
+            document.getElementById('modal-duck-desc').innerText = description;
+            modal.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function closeDuckModal() {
+            document.getElementById('duck-modal').classList.add('hidden');
+            if (caughtDucks === 8) {
+                alertCustom("Tahniah! Anda telah berjaya menangkap kesemua 8 ekor itik peranan bahasa kebangsaan dalam kolam!");
+            }
+        }
+
+        function alertCustom(msg) {
+            const m = document.createElement('div');
+            m.className = "fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4";
+            m.innerHTML = `
+                <div class="bg-tjcream p-5 sm:p-6 rounded-2xl border-4 border-black text-center max-w-md shadow-[8px_8px_0px_#111] my-auto w-full">
+                    <div class="text-4xl mb-2">🎉</div>
+                    <h3 class="font-cartoon text-2xl text-tjred mb-2">Tahniah!</h3>
+                    <p class="font-semibold text-gray-800 mb-4 text-sm sm:text-base leading-relaxed">${msg}</p>
+                    <button onclick="this.closest('.fixed').remove()" class="bg-tjyellow px-6 py-2 rounded-xl border-3 border-black font-cartoon text-lg sm:text-xl shadow">OK!</button>
+                </div>
+            `;
+            document.body.appendChild(m);
+        }
+
+        function openChallengeModal(title, desc, tips) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = "Huraian Cabaran: " + desc;
+            document.getElementById('modal-tips').innerText = tips;
+            document.getElementById('universal-modal').classList.remove('hidden');
+        }
+
+        function closeUniversalModal() {
+            document.getElementById('universal-modal').classList.add('hidden');
+        }
+
+        const quizData = [
+            {
+                question: "Akta apakah yang mentakrifkan kedudukan bahasa Melayu sebagai bahasa rasmi negara?",
+                options: [
+                    "Akta Bahasa Kebangsaan 1963/67",
+                    "Akta Pelajaran 1961",
+                    "Akta Pendidikan 1996",
+                    "Akta UKM 1970"
+                ],
+                correct: 0
+            },
+            {
+                question: "Bilakah Dewan Bahasa dan Pustaka (DBP) ditubuhkan?",
+                options: ["1960", "1956", "1970", "2012"],
+                correct: 1
+            },
+            {
+                question: "Universiti Kebangsaan Malaysia (UKM) ditubuhkan pada tahun 1970 bagi tujuan apa?",
+                options: [
+                    "Menjadikan bahasa Inggeris bahasa utama",
+                    "Memartabatkan bahasa kebangsaan sebagai bahasa ilmu",
+                    "Menguruskan peperiksaan awam",
+                    "Mencetak buku teks sukan"
+                ],
+                correct: 1
+            },
+            {
+                question: "Apakah maksud 'Bahasa Rojak' seperti dalam glosari teks?",
+                options: [
+                    "Bahasa yang digunakan di mahkamah",
+                    "Bahasa rasmi antarabangsa",
+                    "Bahasa yang bercampur aduk kata-kata yang digunakan oleh penuturnya",
+                    "Bahasa klasik sastera purba"
+                ],
+                correct: 2
+            },
+            {
+                question: "Bilakah sambutan Bulan Bahasa Kebangsaan diadakan pada setiap tahun?",
+                options: ["Bulan Januari", "Bulan Mei", "Bulan Ogos", "Bulan Oktober"],
+                correct: 3
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('quiz-box').classList.remove('hidden');
+            document.getElementById('quiz-result-box').classList.add('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = quizData[currentQuestionIndex];
+            document.getElementById('question-number').innerText = `Soalan ${currentQuestionIndex + 1} / ${quizData.length}`;
+            document.getElementById('score-tracker').innerText = `Skor: ${score}`;
+            document.getElementById('question-text').innerText = q.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            document.getElementById('quiz-feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-amber-100 text-left p-3.5 sm:p-4 rounded-xl border-3 border-black font-semibold shadow-[3px_3px_0px_#111] transition-all leading-snug text-sm sm:text-base";
+                btn.innerHTML = `<span class="font-cartoon text-tjred mr-2 text-base sm:text-lg">${String.fromCharCode(65 + index)}.</span> ${opt}`;
+                btn.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedIndex) {
+            const q = quizData[currentQuestionIndex];
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.remove('hidden');
+
+            const optionButtons = document.getElementById('options-container').children;
+
+            if (selectedIndex === q.correct) {
+                score += 20;
+                feedback.className = "mt-4 p-3 rounded-xl font-bold text-center bg-green-200 text-green-900 border-2 border-black";
+                feedback.innerHTML = "🎉 Tepat Sekali! Jerry dapat keju emas! 🧀";
+                optionButtons[selectedIndex].classList.add('bg-green-300');
+            } else {
+                feedback.className = "mt-4 p-3 rounded-xl font-bold text-center bg-red-200 text-red-900 border-2 border-black";
+                feedback.innerHTML = `❌ Ops! Jawapan betul ialah: <strong>${q.options[q.correct]}</strong>`;
+                optionButtons[selectedIndex].classList.add('bg-red-300');
+                optionButtons[q.correct].classList.add('bg-green-300');
+            }
+
+            for (let btn of optionButtons) {
+                btn.disabled = true;
+                btn.style.cursor = 'not-allowed';
+            }
+
+            document.getElementById('score-tracker').innerText = `Skor: ${score}`;
+
+            if (currentQuestionIndex < quizData.length - 1) {
+                document.getElementById('next-btn').classList.remove('hidden');
+            } else {
+                setTimeout(() => {
+                    showResults();
+                }, 1500);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        function showResults() {
+            document.getElementById('quiz-box').classList.add('hidden');
+            const resultBox = document.getElementById('quiz-result-box');
+            resultBox.classList.remove('hidden');
+            document.getElementById('final-score-text').innerHTML = `Anda telah mengumpul <strong>${score} / 100</strong> markah keju bersama Jerry! 🐭🧀`;
+        }
+
+        function restartQuiz() {
+            loadQuiz();
+        }
+
+        window.onload = function() {
+            loadQuiz();
+        };
+    </script>
+</body>
+</html>
